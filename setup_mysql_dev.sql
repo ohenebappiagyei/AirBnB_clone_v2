@@ -1,5 +1,5 @@
 -- Create or use hbnb_dev_db database
-CREATE DATABASE IF NOT EXISTS HBNB_DEV_DB;
+CREATE DATABASE IF NOT EXISTS hbnb_dev_db;
 
 -- Create or use hbnb_dev user with the specified password
 CREATE USER IF NOT EXISTS 'hbnb_dev'@'localhost' IDENTIFIED BY 'hbnb_dev_pwd';
