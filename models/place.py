@@ -16,3 +16,7 @@ class Place(BaseModel):
     latitude = 0.0
     longitude = 0.0
     amenity_ids = []
+
+    def __str__(self):
+        cls_name = self.__class__.__name__
+        return "[{}] ({}) {}".format(cls_name, self.id, self.__dict__)
