@@ -1,81 +1,63 @@
-# puppet/manifests/web_static.pp
-
-# Update package repository
-exec { 'apt-update':
-  command => 'apt-get update',
-  path    => '/usr/bin',
+# Setup the web servers for the deployment of web_static
+exec { '/usr/bin/env apt -y update' : }
+-> package { 'nginx':
+  ensure => installed,
 }
-
-# Install nginx
-package { 'nginx':
-  ensure  => 'latest',
-  require => Exec['apt-update'],
+-> file { '/data':
+  ensure  => 'directory'
 }
-
-# Create directory structure
-file { '/data/web_static/releases/test/':
-  ensure => 'directory',
+-> file { '/data/web_static':
+  ensure => 'directory'
 }
-
-file { '/data/web_static/shared/':
-  ensure => 'directory',
+-> file { '/data/web_static/releases':
+  ensure => 'directory'
 }
-
-# Create index.html
-file { '/data/web_static/releases/test/index.html':
-  content => '<!DOCTYPE html>
+-> file { '/data/web_static/releases/test':
+  ensure => 'directory'
+}
+-> file { '/data/web_static/shared':
+  ensure => 'directory'
+}
+-> file { '/data/web_static/releases/test/index.html':
+  ensure  => 'present',
+  content => "<!DOCTYPE html>
 <html>
   <head>
   </head>
   <body>
     <p>Nginx server test</p>
   </body>
-</html>',
-  require => File['/data/web_static/releases/test/'],
+</html>"
 }
-
-# Create symbolic link
-file { '/data/web_static/current':
-  ensure  => 'link',
-  target  => '/data/web_static/releases/test/',
-  require => File['/data/web_static/releases/test/index.html'],
+-> file { '/data/web_static/current':
+  ensure => 'link',
+  target => '/data/web_static/releases/test'
 }
-
-# Change ownership
-exec { 'chown-web-static':
-  command => 'chown -R ubuntu:ubuntu /data',
-  require => File['/data/web_static/current'],
+-> exec { 'chown -R ubuntu:ubuntu /data/':
+  path => '/usr/bin/:/usr/local/bin/:/bin/'
 }
-
-# Configure Nginx
-file { '/etc/nginx/sites-enabled/default':
-  content => "server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-
-    server_name _;
-
-    root /var/www/html;
-
-    index index.html index.htm index.nginx-debian.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    location /hbnb_static {
-        alias /data/web_static/current;
-    }
+-> file { '/var/www':
+  ensure => 'directory'
 }
-",
-  require  => Package['nginx'],
-  notify  => Service['nginx'],
+-> file { '/var/www/html':
+  ensure => 'directory'
 }
-
-# Restart Nginx
-service { 'nginx':
-  ensure     => 'running',
-  enable     => true,
-  subscribe => File['/etc/nginx/sites-enabled/default'],
+-> file { '/var/www/html/index.html':
+  ensure  => 'present',
+  content => "<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <p>Nginx server test</p>
+  </body>
+</html>"
 }
-
+exec { 'nginx_conf':
+  environment => ['data=\ \tlocation /hbnb_static {\n\t\talias /data/web_static/current;\n\t}\n'],
+  command     => 'sed -i "39i $data" /etc/nginx/sites-enabled/default',
+  path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin'
+}
+-> service { 'nginx':
+  ensure => running,
+}
