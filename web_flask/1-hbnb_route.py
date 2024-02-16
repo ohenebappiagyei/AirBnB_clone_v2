@@ -10,14 +10,14 @@ app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
 def hello_hbnb():
-	"""Route that displays 'Hello HBNB!'"""
-	return 'Hello HBNB!'
+    """Route that displays 'Hello HBNB!'"""
+    return 'Hello HBNB!'
+
 
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
-	"""Route that displays 'HBNB'"""
-	return 'HBNB'
-
+    """Route that displays 'HBNB'"""
+    return 'HBNB'
 
 
 if __name__ == "__main__":

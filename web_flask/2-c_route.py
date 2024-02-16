@@ -10,19 +10,20 @@ app = Flask(__name__)
 
 @app.route('/', strict_slashes=False)
 def hello_hbnb():
-	"""Route that displays 'Hello HBNB!'"""
-	return 'Hello HBNB!'
+    """Route that displays 'Hello HBNB!'"""
+    return 'Hello HBNB!'
+
 
 @app.route('/hbnb', strict_slashes=False)
 def hbnb():
-	"""Route that displays 'HBNB'"""
-	return 'HBNB'
+    """Route that displays 'HBNB'"""
+    return 'HBNB'
+
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_route(text):
-	"""Route that displays 'C' followed by value of the text variable"""
-	return 'C {}'.format(escape(text.replace('_', ' ')))
-
+    """Route that displays 'C' followed by value of the text variable"""
+    return 'C {}'.format(escape(text.replace('_', ' ')))
 
 
 if __name__ == "__main__":
