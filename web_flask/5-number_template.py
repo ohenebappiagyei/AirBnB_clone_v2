@@ -2,7 +2,7 @@
 """This scripts starts a Flask web application"""
 
 
-from flask import Flask, escape, render_template
+from flask import Flask, escape
 
 
 app = Flask(__name__)
@@ -20,8 +20,8 @@ def hbnb():
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_route(text):
-	"""Route that displays 'C' followed by value of the text variable"""
-	return 'C {}'.format(escape(text.replace('_', ' ')))
+    """Route that displays 'C' followed by value of the text variable"""
+    return 'C ' + text.replace('_', ' ')
 
 @app.route('/python/', strict_slashes=False)
 @app.route('/python/<text>', strict_slashes=False)
